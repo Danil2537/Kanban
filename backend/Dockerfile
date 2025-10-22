@@ -28,9 +28,6 @@ COPY --from=builder /app/dist ./dist
 # Copy package.json & package-lock.json
 COPY --from=builder /app/package*.json ./
 
-# Copy .env if exists
-COPY --from=builder /app/.env ./
-
 # Install production dependencies only
 RUN npm ci --production
 
