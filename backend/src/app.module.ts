@@ -5,7 +5,11 @@ import { ConfigModule } from '@nestjs/config';
 import { BoardsModule } from './boards/boards.module';
 import { CardsModule } from './cards/cards.module';
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), BoardsModule, CardsModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    BoardsModule,
+    CardsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

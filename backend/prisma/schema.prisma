@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
+//   output   = "../generated/prisma"
+//   engineType = "library"
 }
 
 datasource db {
@@ -22,7 +23,7 @@ enum CardColumn {
 
 model Board {
     id        String   @id @default(uuid()) //uuid for 'hashed' id
-    name String @default("New Board")
+    title String @default("New Board")
     cards Card[]
 }
 
