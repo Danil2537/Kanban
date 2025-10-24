@@ -5,9 +5,9 @@ import { PrismaService } from '../prisma/prisma.service';
 export class BoardsService {
   constructor(private prismaService: PrismaService) {}
 
-  async create(title: string) {
+  async create() {
     return this.prismaService.$transaction(async (tx) => {
-      return tx.board.create({ data: { title } });
+      return tx.board.create({ data: {} });
     });
   }
 

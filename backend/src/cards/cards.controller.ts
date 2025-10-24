@@ -14,9 +14,9 @@ import { CardColumn } from '@prisma/client';
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
-  @Post()
-  create(@Body() body: { boardId: string }) {
-    return this.cardsService.create(body.boardId);
+  @Post(':boardId')
+  create(@Param('boardId') boardId: string) {
+    return this.cardsService.create(boardId);
   }
 
   @Get(':id')
@@ -44,9 +44,9 @@ export class CardsController {
   @Patch('changeColumn/:id')
   changeColumn(
     @Param('id') id: string,
-    @Body() body: { newColumn: CardColumn; newOrder: number },
+    @Body() body: { newColumn: CardColumn },
   ) {
-    return this.cardsService.changeColumn(id, body.newColumn, body.newOrder);
+    return this.cardsService.changeColumn(id, body.newColumn);
   }
 
   @Delete(':id')

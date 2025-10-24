@@ -82,7 +82,7 @@ export class CardsService {
     });
   }
 
-  async changeColumn(id: string, newColumn: CardColumn, newOrder: number) {
+  async changeColumn(id: string, newColumn: CardColumn) {
     return this.prismaService.$transaction(async (tx) => {
       const card = await tx.card.findUnique({ where: { id } });
       if (!card) throw new Error(`Card ${id} not found`);
@@ -92,25 +92,9 @@ export class CardsService {
         orderBy: { order: 'asc' },
       });
 
-      const targetCount = targetCards.length;
+      const newOrder = targetCards.length + 1;
 
-      if (targetCount === 0 && newOrder !== 1)
-        throw new Error(`Invalid order: target column is empty, must be 1`);
-
-      if (newOrder < 1 || newOrder > targetCount + 1)
-        throw new Error(
-          `Invalid order: must be between 1 and ${targetCount + 1}`,
-        );
-
-      await tx.card.updateMany({
-        where: {
-          boardId: card.boardId,
-          column: newColumn,
-          order: { gte: newOrder },
-        },
-        data: { order: { increment: 1 } },
-      });
-
+      // Shift up orders in source column after removing the card
       await tx.card.updateMany({
         where: {
           boardId: card.boardId,
