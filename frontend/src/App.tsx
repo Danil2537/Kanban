@@ -62,53 +62,36 @@ function CardItem({
     setColumnCards: React.Dispatch<React.SetStateAction<Card[]>>,
     cardId: string,
   ) => {
-    const url = `${BACKEND_URL}/cards/${cardId}`;
-    const res = await fetch(url, {
+    const res = await fetch(`${BACKEND_URL}/cards/${cardId}`, {
       method: 'DELETE',
     });
-
     if (res.ok) {
-      setColumnCards((prevCards) =>
-        prevCards.filter((card) => card.id !== cardId),
-      );
+      setColumnCards((prev) => prev.filter((c) => c.id !== cardId));
     } else {
       alert('Failed to delete card');
     }
   };
 
-  const toggleCardEdit = (
-    cardId: string,
-    columnCards: Card[],
-    setColumnCards: React.Dispatch<React.SetStateAction<Card[]>>,
-  ) => {
+  const toggleCardEdit = (cardId: string) => {
     setColumnCards(
-      columnCards.map((card) =>
-        card.id === cardId ? { ...card, isEditing: !card.isEditing } : card,
+      columnCards.map((c) =>
+        c.id === cardId ? { ...c, isEditing: !c.isEditing } : c,
       ),
     );
   };
 
   const updateCardField = (
     cardId: string,
-    columnCards: Card[],
-    setColumnCards: React.Dispatch<React.SetStateAction<Card[]>>,
     field: 'title' | 'description',
     value: string,
   ) => {
     setColumnCards(
-      columnCards.map((card) =>
-        card.id === cardId ? { ...card, [field]: value } : card,
-      ),
+      columnCards.map((c) => (c.id === cardId ? { ...c, [field]: value } : c)),
     );
   };
 
-  const saveCardToDb = async (
-    card: Card,
-    columnCards: Card[],
-    setColumnCards: React.Dispatch<React.SetStateAction<Card[]>>,
-  ) => {
-    const url = `${BACKEND_URL}/cards/updateContent/${card.id}`;
-    const res = await fetch(url, {
+  const saveCardToDb = async (card: Card) => {
+    const res = await fetch(`${BACKEND_URL}/cards/updateContent/${card.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -116,7 +99,6 @@ function CardItem({
         description: card.description,
       }),
     });
-
     if (res.ok) {
       setColumnCards(
         columnCards.map((c) =>
@@ -132,59 +114,58 @@ function CardItem({
     <li
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
-      className="p-2 mb-2 bg-white shadow rounded-md"
+      className="p-2 mb-2 bg-zinc-800 shadow rounded-md"
     >
+      <div
+        className="cursor-grab select-none text-gray-500 mb-1"
+        {...attributes}
+        {...listeners}
+      >
+        <span className="material-symbols-outlined">drag_handle</span>
+      </div>
+
       {card.isEditing ? (
         <>
           <input
             value={card.title}
-            onChange={(e) =>
-              updateCardField(
-                card.id,
-                columnCards,
-                setColumnCards,
-                'title',
-                e.target.value,
-              )
-            }
+            onChange={(e) => updateCardField(card.id, 'title', e.target.value)}
+            className="w-full border p-1 rounded mb-1"
           />
           <textarea
             value={card.description}
             onChange={(e) =>
-              updateCardField(
-                card.id,
-                columnCards,
-                setColumnCards,
-                'description',
-                e.target.value,
-              )
+              updateCardField(card.id, 'description', e.target.value)
             }
+            className="w-full border p-1 rounded"
           />
         </>
       ) : (
         <>
-          <h3>{card.title}</h3>
+          <h3 className="font-bold">{card.title}</h3>
           <p>{card.description}</p>
         </>
       )}
 
-      <div>
+      <div className="mt-2 flex gap-2">
         {card.isEditing ? (
           <button
-            onClick={() => saveCardToDb(card, columnCards, setColumnCards)}
+            onClick={() => saveCardToDb(card)}
+            className="text-green-600 hover:text-green-800"
           >
             Save
           </button>
         ) : (
           <button
-            onClick={() => toggleCardEdit(card.id, columnCards, setColumnCards)}
+            onClick={() => toggleCardEdit(card.id)}
+            className="text-blue-600 hover:text-blue-800"
           >
             Edit
           </button>
         )}
-        <button onClick={() => handleDeleteCard(setColumnCards, card.id)}>
+        <button
+          onClick={() => handleDeleteCard(setColumnCards, card.id)}
+          className="text-red-600 hover:text-red-800"
+        >
           Delete
         </button>
       </div>
@@ -204,7 +185,7 @@ function DroppableColumn({
     <div
       ref={setNodeRef}
       className={`w-1/3 p-4 rounded-lg transition-colors ${
-        isOver ? 'bg-blue-100' : 'bg-gray-100'
+        isOver ? 'bg-zinc-400' : 'bg-zinc-600'
       }`}
     >
       <h2 className="font-bold mb-2">{id.replace('_', ' ')}</h2>
@@ -244,19 +225,40 @@ export function Board() {
   });
   const [disableEditBoardTitle, setDisableEditBoardTitle] = useState(false);
   const handleBoardSearch = async (id?: string) => {
-    const url = `${BACKEND_URL}/boards/${id}`;
-    const res = await fetch(url);
-    if (res.ok) {
-      const data = await res.json();
-      alert(JSON.stringify(data));
-      if (data) {
-        setBoard({ id: data.id, title: data.title });
-        setTodoCards(data.cards.filter((card: Card) => card.column == 'TODO'));
-        setInprogressCards(
-          data.cards.filter((card: Card) => card.column == 'IN_PROGRESS'),
-        );
-        setDoneCards(data.cards.filter((card: Card) => card.column == 'DONE'));
+    if (!id) {
+      alert('Please enter a board ID.');
+      return;
+    }
+
+    try {
+      const url = `${BACKEND_URL}/boards/${id}`;
+      const res = await fetch(url);
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          alert('Board not found. Please check the ID and try again.');
+        } else {
+          alert(`Error fetching board: ${res.statusText}`);
+        }
+        return;
       }
+
+      const data = await res.json();
+
+      if (!data) {
+        alert('No data received for this board.');
+        return;
+      }
+
+      setBoard({ id: data.id, title: data.title });
+      setTodoCards(data.cards.filter((card: Card) => card.column === 'TODO'));
+      setInprogressCards(
+        data.cards.filter((card: Card) => card.column === 'IN_PROGRESS'),
+      );
+      setDoneCards(data.cards.filter((card: Card) => card.column === 'DONE'));
+    } catch (err) {
+      console.error('Error fetching board:', err);
+      alert('Failed to load board. Please try again later.');
     }
   };
 
@@ -274,10 +276,35 @@ export function Board() {
   };
 
   const handleDeleteBoard = async (id?: string) => {
-    if (!id) return;
-    const url = `${BACKEND_URL}/boards/${id}`;
-    const res = await fetch(url, { method: 'DELETE' });
-    console.log(JSON.stringify(res));
+    if (!id) {
+      alert('No board selected to delete.');
+      return;
+    }
+
+    const confirmDelete = confirm(
+      'Are you sure you want to delete this board? This action cannot be undone.',
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const url = `${BACKEND_URL}/boards/${id}`;
+      const res = await fetch(url, { method: 'DELETE' });
+
+      if (!res.ok) {
+        alert(`Failed to delete board: ${res.statusText}`);
+        return;
+      }
+
+      setBoard({ id: '', title: '' });
+      setTodoCards([]);
+      setInprogressCards([]);
+      setDoneCards([]);
+
+      alert('Board deleted successfully.');
+    } catch (err) {
+      console.error('Error deleting board:', err);
+      alert('Failed to delete board. Please try again later.');
+    }
   };
 
   const handleUpdateBoardName = (newTitle: string) => {
