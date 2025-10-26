@@ -7,10 +7,10 @@ import reducer, {
   moveCardBetweenColumns,
   setActiveCard,
   clearActiveCard,
-} from './cardsSlice';
+} from '../../store/cardsSlice';
 
-import { deleteCard, saveCard, createCard } from './cardsSlice';
-import type { CardState, Card } from '../interfaces';
+import { deleteCard, saveCard, createCard } from '../../store/cardsSlice';
+import type { CardState, Card } from '../../interfaces';
 import { describe, it, expect } from 'vitest';
 
 describe('cardsSlice', () => {

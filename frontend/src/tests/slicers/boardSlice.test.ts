@@ -7,7 +7,7 @@ import reducer, {
   findBoard,
   deleteBoard,
   saveBoardTitle,
-} from './boardSlice';
+} from '../../store/boardSlice';
 import { describe, it, expect } from 'vitest';
 
 describe('boardSlice', () => {

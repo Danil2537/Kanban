@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import DroppableColumn from './Column';
+import DroppableColumn from '../../components/Column';
 import { describe, expect, it, vi } from 'vitest';
 import type { PropsWithChildren } from 'react';
 vi.mock('@dnd-kit/core', () => ({

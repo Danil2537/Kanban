@@ -2,10 +2,10 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import cardsReducer from '../store/cardsSlice';
-import boardReducer from '../store/boardSlice';
-import { Board } from './Board';
-import type { RootState } from '../store';
+import cardsReducer from '../../store/cardsSlice';
+import boardReducer from '../../store/boardSlice';
+import { Board } from '../../components/Board';
+import type { RootState } from '../../store';
 
 // Mock fetch globally
 vi.stubGlobal(

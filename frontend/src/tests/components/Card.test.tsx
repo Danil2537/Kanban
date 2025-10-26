@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import cardsReducer from '../store/cardsSlice';
-import CardItem from './Card';
-import type { Card } from '../interfaces';
+import cardsReducer from '../../store/cardsSlice';
+import CardItem from '../../components/Card';
+import type { Card } from '../../interfaces';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, beforeEach, describe, it, expect } from 'vitest';
-import type { RootState } from '../store';
+import type { RootState } from '../../store';
 
 // --- Mocks ---
 vi.mock('@dnd-kit/sortable', () => ({
