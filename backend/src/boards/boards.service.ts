@@ -32,6 +32,9 @@ export class BoardsService {
 
   async remove(id: string) {
     return this.prismaService.$transaction(async (tx) => {
+      const board = await tx.board.findUnique({ where: { id } });
+      if (!board) throw new Error(`Board ${id} not found`);
+
       return tx.board.delete({ where: { id } });
     });
   }

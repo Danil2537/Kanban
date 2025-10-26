@@ -128,7 +128,7 @@ export function Board() {
     <>
       <h1>Kanban Boards</h1>
       <div>
-        <label htmlFor="searchbar">Enter Board ID</label>
+        <label htmlFor="searchBar">Enter Board ID</label>
         <input
           type="text"
           id="searchBar"
