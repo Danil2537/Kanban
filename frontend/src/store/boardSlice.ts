@@ -11,9 +11,12 @@ export const findBoard = createAsyncThunk(
   'board/find',
   async (boardId: string, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(clearCards());
+
       const res = await fetch(`${BACKEND_URL}/boards/${boardId}`);
       if (!res.ok) throw new Error('Failed to find board');
       const data = await res.json();
+
       dispatch(fillCards(data.cards));
       return data;
     } catch (error) {
@@ -78,7 +81,7 @@ export const saveBoardTitle = createAsyncThunk(
 );
 
 const initialState: BoardState = {
-  searchBar: '',
+  searchBar: 'ed954f29-74d8-48e6-bc27-96b5755f2e0e',
   id: '',
   title: '',
   isEditing: false,

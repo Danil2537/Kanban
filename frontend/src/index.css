@@ -2,7 +2,19 @@
 @import "tailwindcss";
 
 
-
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24;
+    font-feature-settings: 'liga';
+    display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
+  }
+  
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -10,7 +22,6 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,11 +40,8 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #121212;
 }
 
 h1 {
@@ -48,7 +56,6 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -61,15 +68,23 @@ button:focus-visible {
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #242424;
-  }
   a:hover {
     color: #747bff;
   }
-  button {
-    background-color: #242424;
-  }
 }
 
+@font-face {
+    font-family: "Programme";
+    src: url("/fonts/programme/Programme.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: "Suprapower";
+    src: url("/fonts/programme/Suprapower.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  

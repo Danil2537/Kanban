@@ -60,11 +60,13 @@ describe('<DroppableColumn />', () => {
     expect(screen.getByText('Test Card 2')).toBeInTheDocument();
   });
 
-  it('renders + Add button when onCreate is provided', () => {
+  it('renders add button icon when onCreate is provided', () => {
     render(
       <DroppableColumn id="TODO" columnCards={mockCards} onCreate={() => {}} />,
     );
-    expect(screen.getByText('+ Add')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /add card/i }),
+    ).toBeInTheDocument();
   });
 
   it('does not render + Add button when onCreate is missing', () => {
@@ -72,7 +74,7 @@ describe('<DroppableColumn />', () => {
     expect(screen.queryByText('+ Add')).not.toBeInTheDocument();
   });
 
-  it('calls onCreate when + Add button is clicked', () => {
+  it('calls onCreate when add button is clicked', () => {
     const onCreateMock = vi.fn();
     render(
       <DroppableColumn
@@ -81,7 +83,7 @@ describe('<DroppableColumn />', () => {
         onCreate={onCreateMock}
       />,
     );
-    fireEvent.click(screen.getByText('+ Add'));
+    fireEvent.click(screen.getByRole('button', { name: /add card/i }));
     expect(onCreateMock).toHaveBeenCalledTimes(1);
   });
 });

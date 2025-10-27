@@ -32,7 +32,7 @@ describe('Board component', () => {
     vi.clearAllMocks();
     store = setupStore({
       boards: {
-        searchBar: 'abc',
+        searchBar: 'ed954f29-74d8-48e6-bc27-96b5755f2e0e',
         id: 'board1',
         title: 'My Board',
         isEditing: false,
@@ -46,7 +46,7 @@ describe('Board component', () => {
     });
   });
 
-  it('renders board title, search bar, and columns', () => {
+  it('renders board title, search bar, copy button, and columns', () => {
     render(
       <Provider store={store}>
         <Board />
@@ -54,12 +54,18 @@ describe('Board component', () => {
     );
 
     expect(screen.getByText('Kanban Boards')).toBeInTheDocument();
-    expect(screen.getByLabelText('Enter Board ID')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('ed954f29-74d8-48e6-bc27-96b5755f2e0e'),
+    ).toBeInTheDocument();
     expect(screen.getByDisplayValue('My Board')).toBeInTheDocument();
     expect(screen.getByText('TODO')).toBeInTheDocument();
+    // Check that the copy button exists
+    expect(
+      screen.getByRole('button', { name: /content_copy/i }),
+    ).toBeInTheDocument();
   });
 
-  it('dispatches editSearchBar and clearBoardError when typing in search bar', () => {
+  it('dispatches editSearchBar and clears board error when typing', () => {
     render(
       <Provider store={store}>
         <Board />
@@ -67,17 +73,14 @@ describe('Board component', () => {
     );
 
     const input = screen.getByPlaceholderText(
-      'ce626fca-e2d2-43a2-be16-a46298a3c1e1',
+      'ed954f29-74d8-48e6-bc27-96b5755f2e0e',
     );
-
     fireEvent.change(input, { target: { value: 'abc123' } });
 
-    // There should now be two actions dispatched
-    //const actions = store.getState(); // you can assert state changes if needed
     expect(store.getState().boards.searchBar).toBe('abc123');
   });
 
-  it('dispatches findBoard when Search is clicked', async () => {
+  it('dispatches findBoard when Load button is clicked', async () => {
     render(
       <Provider store={store}>
         <Board />
@@ -85,17 +88,41 @@ describe('Board component', () => {
     );
 
     await act(async () => {
-      fireEvent.click(screen.getByText('Search'));
+      fireEvent.click(screen.getByText('Load'));
     });
 
     expect(store.getState().boards.id).toBe('board1');
   });
 
+  it('copies search bar contents when copy button is clicked', async () => {
+    render(
+      <Provider store={store}>
+        <Board />
+      </Provider>,
+    );
+
+    const copyButton = screen.getByRole('button', { name: /content_copy/i });
+
+    // Mock clipboard
+    Object.assign(navigator, {
+      clipboard: { writeText: vi.fn() },
+    });
+
+    await act(async () => {
+      fireEvent.click(copyButton);
+    });
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      store.getState().boards.searchBar,
+    );
+    // The icon should now show 'done_outline'
+    expect(copyButton.textContent).toBe('done_outline');
+  });
+
   it('dispatches toggleBoardEdit and saveBoardTitle when editing title', async () => {
-    // Render with isEditing true
     store = setupStore({
       boards: {
-        searchBar: 'abc',
+        searchBar: 'ed954f29-74d8-48e6-bc27-96b5755f2e0e',
         id: 'board1',
         title: 'My Board',
         isEditing: true,
@@ -124,7 +151,6 @@ describe('Board component', () => {
       fireEvent.click(saveButton);
     });
 
-    // The mock fetch will resolve the title back to 'My Board'
     expect(store.getState().boards.title).toBe('My Board');
   });
 

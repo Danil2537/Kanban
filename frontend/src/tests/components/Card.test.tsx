@@ -61,17 +61,16 @@ describe('CardItem', () => {
 
   it('renders title and description in view mode', () => {
     renderCard(baseCard);
-
     expect(screen.getByText('Test Card')).toBeInTheDocument();
     expect(screen.getByText('Test Description')).toBeInTheDocument();
-    expect(screen.getByText('Edit')).toBeInTheDocument();
-    expect(screen.getByText('Delete')).toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
   });
 
-  it('dispatches toggleCardEdit when Edit is clicked', () => {
+  it('dispatches toggleCardEdit when edit is clicked', () => {
     renderCard(baseCard);
-
-    fireEvent.click(screen.getByText('Edit'));
+    fireEvent.click(screen.getByRole('button', { name: /edit/i }));
     expect(mockDispatch).toHaveBeenCalled();
   });
 
@@ -103,10 +102,9 @@ describe('CardItem', () => {
     expect(mockDispatch).toHaveBeenCalled();
   });
 
-  it('dispatches deleteCard when Delete is clicked', () => {
+  it('dispatches deleteCard when delete is clicked', () => {
     renderCard(baseCard);
-
-    fireEvent.click(screen.getByText('Delete'));
+    fireEvent.click(screen.getByRole('button', { name: /delete/i }));
     expect(mockDispatch).toHaveBeenCalled();
   });
 });

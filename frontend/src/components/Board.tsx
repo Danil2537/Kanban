@@ -29,6 +29,7 @@ import {
   clearActiveCard,
   createCard,
 } from '../store/cardsSlice';
+import { useState, useEffect } from 'react';
 
 export function Board() {
   const dispatch = useDispatch<AppDispatch>();
@@ -124,34 +125,70 @@ export function Board() {
     dispatch(clearActiveCard());
   };
 
+  const [copied, setCopied] = useState(false);
+
+  // Reset copied state whenever searchBar changes
+  useEffect(() => {
+    setCopied(false);
+  }, [searchBar]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(searchBar);
+    setCopied(true);
+  };
+
   return (
-    <>
-      <h1>Kanban Boards</h1>
-      <div>
-        <label htmlFor="searchBar">Enter Board ID</label>
-        <input
-          type="text"
-          id="searchBar"
-          name="searchBar"
-          value={searchBar}
-          onChange={(e) => {
-            dispatch(editSearchBar({ text: e.target.value }));
-            dispatch(clearBoardError());
-          }}
-          placeholder="ce626fca-e2d2-43a2-be16-a46298a3c1e1"
-        />
-        <div>
-          <button onClick={() => dispatch(findBoard(searchBar))}>Search</button>
-          <button onClick={() => dispatch(createBoard())}>
-            Create new Board
-          </button>
-          {error && <p className="text-red-500 mt-2">{error}</p>}
+    <div className="flex flex-col items-center min-h-screen bg-zinc-900 text-gray-200 py-8 px-6">
+      <h1 className="font-bold mb-8">Kanban Boards</h1>
+      <div className="w-full max-w-6xl mb-10">
+        <h2 className="text-2xl font-bold mb-4">Enter Board ID</h2>
+
+        <div className="flex flex-col md:flex-row items-stretch gap-2">
+          <div className="relative w-full md:w-2/3">
+            <input
+              type="text"
+              id="searchBar"
+              name="searchBar"
+              value={searchBar}
+              onChange={(e) => {
+                dispatch(editSearchBar({ text: e.target.value }));
+                dispatch(clearBoardError());
+              }}
+              placeholder="ed954f29-74d8-48e6-bc27-96b5755f2e0e"
+              className="w-full h-12 bg-neutral-700 border border-neutral-700 rounded-lg px-4 py-2 pr-12 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+            <button
+              onClick={handleCopy}
+              className="absolute inset-y-0 right-2 flex items-center justify-center px-2 text-gray-300 hover:text-white rounded-md"
+            >
+              <span className="material-symbols-outlined text-lg">
+                {copied ? 'done_outline' : 'content_copy'}
+              </span>
+            </button>
+          </div>
+
+          <div className="flex w-full md:w-1/3 gap-2">
+            <button
+              onClick={() => dispatch(findBoard(searchBar))}
+              className="flex-1 px-3 py-2 bg-blue-500 text-white hover:text-gray-400 hover:bg-blue-700 font-medium rounded-md"
+            >
+              Load
+            </button>
+            <button
+              onClick={() => dispatch(createBoard())}
+              className="flex-1 px-3 py-2 bg-green-500 text-white hover:text-gray-400 hover:bg-green-700 font-medium rounded-md"
+            >
+              New Board
+            </button>
+          </div>
         </div>
+
+        {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
       </div>
 
       {id !== '' && (
-        <div>
-          <div>
+        <div className="w-full max-w-6xl flex flex-col items-left">
+          <div className="flex mb-8 space-x-4">
             <input
               type="text"
               id="boardTitle"
@@ -161,32 +198,46 @@ export function Board() {
                 dispatch(editBoardTitle({ newTitle: e.target.value }))
               }
               disabled={!isEditing}
-              className={`text-2xl font-semibold text-center px-2 py-1 rounded-md ${
+              className={`flex-1 text-2xl font-semibold text-left px-3 rounded-md ${
                 isEditing
-                  ? 'bg-transparent border-none'
-                  : 'bg-gray-800 border border-gray-600'
+                  ? 'bg-neutral-800 border border-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  : 'bg-neutral-700 text-gray-100'
               }`}
             />
-            {isEditing ? (
-              <button
-                onClick={() =>
-                  dispatch(saveBoardTitle({ boardId: id, newTitle: title }))
-                }
-              >
-                Save
-              </button>
-            ) : (
-              <button onClick={() => dispatch(toggleBoardEdit())}>Edit</button>
-            )}
+            <div className="w-2/3 pl-2 flex space-x-6">
+              {isEditing ? (
+                <button
+                  onClick={() =>
+                    dispatch(saveBoardTitle({ boardId: id, newTitle: title }))
+                  }
+                  className="w-1/2 py-1 bg-green-500 text-white hover:text-gray-400 hover:bg-green-700 font-medium"
+                >
+                  Save
+                </button>
+              ) : (
+                <button
+                  onClick={() => dispatch(toggleBoardEdit())}
+                  className="w-1/2 py-1 bg-blue-500 text-white hover:text-gray-400 hover:bg-blue-700 font-medium"
+                >
+                  Edit Title
+                </button>
+              )}
 
-            <button onClick={() => dispatch(deleteBoard(id))}>Delete</button>
+              <button
+                onClick={() => dispatch(deleteBoard(id))}
+                className="w-1/2 py-1 bg-red-500 text-white hover:text-gray-400 hover:bg-red-700 font-medium rounded-md"
+              >
+                Delete Board
+              </button>
+            </div>
           </div>
+
           <DndContext
             sensors={sensors}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
           >
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row justify-center gap-6 w-full">
               <DroppableColumn
                 id="TODO"
                 columnCards={todoCards}
@@ -198,7 +249,7 @@ export function Board() {
 
             <DragOverlay>
               {activeCard ? (
-                <div className="p-2 bg-gray-200 rounded shadow">
+                <div className="bg-neutral-800 px-4 py-2 rounded-md shadow-md">
                   {activeCard.title}
                 </div>
               ) : null}
@@ -206,6 +257,6 @@ export function Board() {
           </DndContext>
         </div>
       )}
-    </>
+    </div>
   );
 }

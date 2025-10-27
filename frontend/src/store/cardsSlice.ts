@@ -105,15 +105,9 @@ const cardsSlice = createSlice({
     },
     fillCards: (state, action: PayloadAction<Card[]>) => {
       const cards = action.payload;
-      cards.forEach((c) => {
-        if (c.column === 'TODO') {
-          state.todoCards.push(c);
-        } else if (c.column === 'IN_PROGRESS') {
-          state.inProgressCards.push(c);
-        } else {
-          state.doneCards.push(c);
-        }
-      });
+      state.todoCards = cards.filter((c) => c.column === 'TODO');
+      state.inProgressCards = cards.filter((c) => c.column === 'IN_PROGRESS');
+      state.doneCards = cards.filter((c) => c.column === 'DONE');
     },
     clearCards: (state) => {
       state.todoCards = [];
