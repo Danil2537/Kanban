@@ -89,6 +89,7 @@ Cards can be:
 **PATCH body example:**
 ```json
 { "updatedTitle": "New Board Title" }
+```
 🃏 Cards Controller
 Endpoint	Method	Description
 /cards/:boardId	POST	Create a new card in TODO column
@@ -100,27 +101,26 @@ Endpoint	Method	Description
 
 PATCH bodies:
 
-json
-Copy code
+```json Copy code
 // Update card content
 { "title": "New Title", "description": "Updated Description" }
-json
-Copy code
+```
+```json Copy code
 // Change order
 { "newOrder": 2 }
-json
-Copy code
+```
+```json Copy code
 // Change column
 { "newColumn": "IN_PROGRESS" }
+```
 CardColumn enum (from Prisma schema):
-
-ts
-Copy code
+```ts Copy code
 enum CardColumn {
   TODO
   IN_PROGRESS
   DONE
 }
+```
 Frontend Structure
 Components
 Board
@@ -133,15 +133,15 @@ Redux Slices
 Board Slice
 Initial state:
 
-ts
-Copy code
-BoardState = {
+```ts Copy code
+const initialState: BoardState = {
   searchBar: "ed954f29-74d8-48e6-bc27-96b5755f2e0e",
   id: "",
   title: "",
   isEditing: false,
   error: "",
 };
+```
 Reducers:
 
 editBoardTitle
@@ -167,17 +167,16 @@ saveBoardTitle.fulfilled
 Card Slice
 Initial state:
 
-ts
-Copy code
+```ts Copy code
 const initialState: CardState = {
   todoCards: [],
   inProgressCards: [],
   doneCards: [],
 };
+```
 Card interface:
 
-ts
-Copy code
+```ts Copy code
 export interface Card {
   id: string;
   column: "TODO" | "IN_PROGRESS" | "DONE";
@@ -188,6 +187,7 @@ export interface Card {
   isEditing?: boolean;
   isActive?: boolean;
 }
+```
 Reducers:
 
 toggleCardEdit
@@ -213,35 +213,3 @@ deleteCard.fulfilled
 saveCard.fulfilled
 
 createCard.fulfilled
-
-Deployment
-Backend: Render.com
-
-Frontend: Netlify
-
-Database: Supabase
-
-CI/CD: Handled by hosting providers
-
-Testing
-Backend: Jest
-
-Frontend: Vitest
-
-Store Integration Tests: Redux Toolkit with Vitest
-
-Drag-and-Drop tests: Simulated via @testing-library/react
-
-Code Quality
-Both frontend and backend use:
-
-ESLint for linting
-
-Prettier for formatting
-
-Demo Board
-Default demo board ID:
-
-Copy code
-ed954f29-74d8-48e6-bc27-96b5755f2e0e
-You can load it in the search bar to explore the app immediately.
