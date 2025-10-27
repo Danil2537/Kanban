@@ -1,4 +1,4 @@
-# 🗂️ Kanban Board App
+# Kanban Board App
 
 A small **Kanban board** TypeScript app developed as a **test task**.
 App link: https://kanbantesttask.netlify.app/
@@ -90,14 +90,14 @@ Cards can be:
 ```json
 { "updatedTitle": "New Board Title" }
 ```
-🃏 Cards Controller
-Endpoint	Method	Description
-/cards/:boardId	POST	Create a new card in TODO column
-/cards/:id	GET	Get card data
-/cards/updateContent/:id	PATCH	Update title/description
-/cards/reorder/:id	PATCH	Change order inside a column
-/cards/changeColumn/:id	PATCH	Move card to another column
-/cards/:id	DELETE	Delete a card
+Cards Controller
+| **Endpoint**	| **Method** |	**Description** |
+| `/cards/:boardId` |	`POST` |	Create a new card in TODO column |
+| `/cards/:id` |	`GET` |	Get card data |
+| `/cards/updateContent/:id` |	`PATCH` |	Update title/description |
+| `/cards/reorder/:id` |	`PATCH` |	Change order inside a column |
+| `/cards/changeColumn/:id` | `PATCH`	Move card to another column |
+| `/cards/:id`	| `DELETE` | Delete a card |
 
 PATCH bodies:
 
@@ -143,26 +143,17 @@ const initialState: BoardState = {
 };
 ```
 Reducers:
-
-editBoardTitle
-
-editSearchBar
-
-toggleBoardEdit
-
-cancelBoardTitleEdit
-
-clearBoardError
+- editBoardTitle
+- editSearchBar
+- toggleBoardEdit
+- cancelBoardTitleEdit
+- clearBoardError
 
 Extra Reducers:
-
-findBoard.fulfilled
-
-findBoard.rejected
-
-deleteBoard.fulfilled
-
-saveBoardTitle.fulfilled
+- findBoard.fulfilled
+- findBoard.rejected
+- deleteBoard.fulfilled
+- saveBoardTitle.fulfilled
 
 Card Slice
 Initial state:
@@ -189,27 +180,16 @@ export interface Card {
 }
 ```
 Reducers:
-
-toggleCardEdit
-
-editCardField
-
-fillCards
-
-clearCards
-
-moveCardWithinColumn
-
-moveCardBetweenColumns
-
-setActiveCard
-
-clearActiveCard
+- toggleCardEdit
+- editCardField
+- fillCards
+- clearCards
+- moveCardWithinColumn
+- moveCardBetweenColumns
+- setActiveCard
+- learActiveCard
 
 Extra Reducers:
-
-deleteCard.fulfilled
-
-saveCard.fulfilled
-
-createCard.fulfilled
+- deleteCard.fulfilled
+- saveCard.fulfilled
+- createCard.fulfilled
