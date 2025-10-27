@@ -91,7 +91,8 @@ Cards can be:
 { "updatedTitle": "New Board Title" }
 ```
 Cards Controller
-| **Endpoint**	| **Method** |	**Description** |
+| Endpoint	| Method |	Description |
+|-----------|--------|-------------|
 | `/cards/:boardId` |	`POST` |	Create a new card in TODO column |
 | `/cards/:id` |	`GET` |	Get card data |
 | `/cards/updateContent/:id` |	`PATCH` |	Update title/description |
